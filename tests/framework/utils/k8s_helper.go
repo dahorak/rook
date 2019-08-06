@@ -52,7 +52,6 @@ type K8sHelper struct {
 	T                func() *testing.T
 }
 
-
 const (
 	// RetryLoop params for tests.
 	RetryLoop = 40
@@ -67,13 +66,12 @@ const (
 // GetKubectlCmd returns kubectl or oc if env varROOK_OPENSHIFT_SUPPORT is set
 // to true
 func GetKubectlCmd() string {
-    var kubectl_cmd = "kubectl"
-    if os.Getenv("ROOK_OPENSHIFT_SUPPORT") == `true`{
-        kubectl_cmd = "oc"
-    }
-    return kubectl_cmd
+	var kubectl_cmd = "kubectl"
+	if os.Getenv("ROOK_OPENSHIFT_SUPPORT") == `true` {
+		kubectl_cmd = "oc"
+	}
+	return kubectl_cmd
 }
-
 
 // CreateK8sHelper creates a instance of k8sHelper
 func CreateK8sHelper(t func() *testing.T) (*K8sHelper, error) {
@@ -152,7 +150,7 @@ func (k8sh *K8sHelper) KubectlWithStdin(stdin string, args ...string) (string, e
 		if strings.Index(cmdOut.Err.Error(), "(NotFound)") != -1 || strings.Index(cmdOut.StdErr, "(NotFound)") != -1 {
 			return cmdOut.StdErr, errors.NewNotFound(schema.GroupResource{}, "")
 		}
-		return cmdOut.StdErr, fmt.Errorf("Failed to run stdin: %s %v : %v", kubectl_cmd,  args, cmdOut.StdErr)
+		return cmdOut.StdErr, fmt.Errorf("Failed to run stdin: %s %v : %v", kubectl_cmd, args, cmdOut.StdErr)
 	}
 	if cmdOut.StdOut == "" {
 		return cmdOut.StdErr, nil
@@ -165,7 +163,7 @@ func (k8sh *K8sHelper) KubectlWithStdin(stdin string, args ...string) (string, e
 func getKubeConfig(executor exec.Executor) (*rest.Config, error) {
 	context, err := executor.ExecuteCommandWithOutput(false, "", kubectl_cmd, "config", "view", "-o", "json")
 	if err != nil {
-		k8slogger.Errorf("Errors Encountered while executing %s command : %v", kubectl_cmd,  err)
+		k8slogger.Errorf("Errors Encountered while executing %s command : %v", kubectl_cmd, err)
 	}
 
 	// Parse the kubectl context to get the settings for client connections
